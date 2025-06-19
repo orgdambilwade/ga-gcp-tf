@@ -46,7 +46,7 @@ jobs:
           echo "Checking the credentials:"
           head -n 3 $GOOGLE_APPLICATION_CREDENTIALS
           gcloud auth activate-service-account $SVC_ACCOUNT_EMAIL --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-          gcloud auth login $SVC_ACCOUNT_EMAIL --no-browser --cred-file=$GOOGLE_APPLICATION_CREDENTIALS
+          gcloud auth application-default login --impersonate-service-account $SVC_ACCOUNT_EMAIL
         shell: bash
 
 
@@ -90,7 +90,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -input=false -out=tfplan        
+        run: terraform plan       
 
       - name: Terraform Apply or Destroy
         run: |
