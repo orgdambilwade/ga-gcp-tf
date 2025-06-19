@@ -34,8 +34,9 @@ jobs:
         uses: google-github-actions/auth@v2
         
         with:
-          #create_credentials_file: true
-          workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
+          
+          #workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}' # It's proabably da-idp
+          workload_identity_provider: 'da-idp' # It's proabably da-idp
           service_account: '${{ secrets.SERVICE_ACCOUNT }}'
           project_id: '${{ secrets.PROJECT_ID }}'
           #id_token_audience: 'https://iam.googleapis.com/projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp'
@@ -43,23 +44,8 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      #- name: set credentials file
-      #  run: >-
-      #    gcloud auth login
-      #    --cred-file=${{steps.auth.outputs.credentials_file_path}}
-
       - name: Use gcloud CLI
         run: gcloud info
-
-      #- id: upload-file
-      #  uses: google-github-actions/upload-cloud-storage@v2
-      #  with:
-      #    path: README.md
-      #    destination: '${{ secrets.GCP_BUCKET }}'
-      #    process_gcloudignore: false
-
-
-
 
       - name: Show Inputs
         run: |
@@ -72,8 +58,7 @@ jobs:
           terraform_version: 1.7.5
 
       - name: Terraform Init with Local Backend
-        run: |
-          terraform init 
+        run: terraform init 
 
       - name: Terraform Validate
         run: terraform validate
@@ -88,76 +73,12 @@ jobs:
           else
             terraform apply -auto-approve
           fi
-        #env:
-        
-        #  GOOGLE_CLOUD_LOCATION: 
-        #  GOOGLE_CLOUD_PROJECT:
-        #  GOOGLE_CLOUD_STORAGE_BUCKET:
-        #  GOOGLE_GENAI_USE_VERTEXAI:
-
 
       - name: Capture Terraform Outputs (only on create)
-        if: ${{ github.event.inputs.agent_action == 'create' }}
+        
+        
         run: |
-          mkdir -p agt_outputs
-          terraform output -json | sed '1d' > agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-
-      - name: Clean JSON File
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        run: |
-          sed -i '/^[^{]/d' agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-
-      - name: Debug Terraform Output File
-        if: ${{ github.event.inputs.agent_action == 'create' }}  
-        run: |
-          echo "Contents of ./agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json:"
-          cat agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-  
-      - name: ✅ Validate Output JSON
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        run: |
-          cat agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-          jq . agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-
-      - name: Upload Terraform Outputs
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-outputs
-          path: agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-
-      - name: Commit tfvars and outputs (only on create)
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        run: |
-          git config --global user.email "a.dheerajj@gmail.com"
-          git config --global user.name "dambilwade"
-          git fetch origin
-          git checkout main
-          git pull origin main
-          git add tfvars_agt_input/${{ github.event.inputs.agent_identifier_name }}.tfvars.json
-          git add agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-          git commit -m "Save tfvars & outputs for agent: ${{ github.event.inputs.agent_identifier_name }}"
-          git push origin main
-        #env:
-        #  GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}          
-
-      - name: Show tfvars content in Backstage UI
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        run: |
-          echo "------ TFVARS (${{
-            github.event.inputs.agent_identifier_name
-          }}) ------"
-          cat tfvars_agt_input/${{ github.event.inputs.agent_identifier_name }}.tfvars.json
-          echo "------ END TFVARS ------"
-
-      - name: Show outputs content in Backstage UI
-        if: ${{ github.event.inputs.agent_action == 'create' }}
-        run: |
-          echo "------ OUTPUTS (${{
-            github.event.inputs.agent_identifier_name
-          }}) ------"
-          cat agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
-          echo "------ END OUTPUTS ------"
-
-
+          terraform output > abc.txt
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          gsutil cp abc.txt gs://staging_bucket_ai ga_tf_op/abc_${TIMESTAMP}.txt
           
