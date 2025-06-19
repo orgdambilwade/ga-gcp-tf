@@ -81,6 +81,7 @@ module "bucket" {
   }
 
 
+/*
 module "ops_agent_policy" {
   source          = "github.com/terraform-google-modules/terraform-google-cloud-operations/modules/ops-agent-policy"
   project         = var.project_id
@@ -99,5 +100,5 @@ module "ops_agent_policy" {
       }
     }]
   }
-}
+}*/
 
