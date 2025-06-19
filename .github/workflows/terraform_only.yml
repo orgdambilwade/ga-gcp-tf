@@ -51,12 +51,12 @@ jobs:
       - name: Use gcloud CLI
         run: gcloud info
 
-      - id: upload-file
-        uses: google-github-actions/upload-cloud-storage@v2
-        with:
-          path: README.md
-          destination: '${{ secrets.GCP_BUCKET }}'
-          process_gcloudignore: false
+      #- id: upload-file
+      #  uses: google-github-actions/upload-cloud-storage@v2
+      #  with:
+      #    path: README.md
+      #    destination: '${{ secrets.GCP_BUCKET }}'
+      #    process_gcloudignore: false
 
 
 
