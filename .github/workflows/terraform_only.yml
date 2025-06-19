@@ -32,10 +32,10 @@ jobs:
         
         with:
           #project_id: 'eternal-argon-461501-a8'
-          workload_identity_provider: 'projects/351592443/locations/global/workloadIdentityPools/providers/github-actions-provider'
-          service_account: 'service-account-1@eternal-argon-461501-a8.iam.gserviceaccount.com'
-          audience: 'projects/351592443/locations/global/workloadIdentityPools/wl-identitiy-pool-da/providers/github-actions-provider'
-
+          #workload_identity_provider: 'projects/351592443/locations/global/workloadIdentityPools/providers/github-actions-provider'
+          #service_account: 'service-account-1@eternal-argon-461501-a8.iam.gserviceaccount.com'
+          #audience: 'projects/351592443/locations/global/workloadIdentityPools/wl-identitiy-pool-da/providers/github-actions-provider'
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}' 
 
       - name: 'Set up Google Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
