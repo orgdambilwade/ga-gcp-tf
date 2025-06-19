@@ -22,30 +22,31 @@ jobs:
     runs-on: ubuntu-latest
     #environment: dev # Configur ENVs
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: read
+      id-token: write
       
     steps:
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v3
+      - name: 'Checkout Code'
+        uses: 'actions/checkout@v2'
 
       - id: auth  
-        name: Authenticate to Google Cloud
+        name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v2
         
         with:
-          create_credentials_file: true
+          #create_credentials_file: true
           workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.SERVICE_ACCOUNT }}'
-          id_token_audience: 'https://iam.googleapis.com/projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp'
+          project_id: '${{ secrets.PROJECT_ID }}'
+          #id_token_audience: 'https://iam.googleapis.com/projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp'
         
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: set credentials file
-        run: >-
-          gcloud auth login
-          --cred-file=${{steps.auth.outputs.credentials_file_path}}
+      #- name: set credentials file
+      #  run: >-
+      #    gcloud auth login
+      #    --cred-file=${{steps.auth.outputs.credentials_file_path}}
 
       - name: Use gcloud CLI
         run: gcloud info
