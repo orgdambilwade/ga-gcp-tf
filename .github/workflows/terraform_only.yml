@@ -46,8 +46,8 @@ jobs:
           echo "Checking the credentials:"
           head -n 3 $GOOGLE_APPLICATION_CREDENTIALS
           gcloud auth activate-service-account $SVC_ACCOUNT_EMAIL --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-          gcloud auth application-default login --impersonate-service-account $SVC_ACCOUNT_EMAIL
-        shell: bash
+
+
 
 
 
