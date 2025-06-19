@@ -23,15 +23,19 @@ jobs:
       id-token: 'write'
       
     steps:
-      - name: Clone the gcloud auth libraries
-        uses: 'actions/checkout@v4'
-
-      - name: Auth config and execution
+      #- name: Clone the gcloud auth libraries
+      #  uses: 'actions/checkout@v4'
+      - id: 'auth'
+      
+      #- name: Auth config and execution
         uses: 'google-github-actions/auth@v2'
         
         with:
-          project_id: 'eternal-argon-461501-a8'
-          workload_identity_provider: projects/351592443/locations/global/workloadIdentityPools/providers/github-actions-provider
+          #project_id: 'eternal-argon-461501-a8'
+          workload_identity_provider: 'projects/351592443/locations/global/workloadIdentityPools/providers/github-actions-provider'
+          service_account: 'service-account-1@eternal-argon-461501-a8.iam.gserviceaccount.com'
+
+
       - name: 'Set up Google Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
         with:
