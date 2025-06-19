@@ -18,7 +18,7 @@ permissions:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SVC_ACCOUNT: ${{ secrets.GCP_SVC_ACCOUNT }}
-  GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/${{ secrets.GCP_SVC_ACCOUNT }}.json
+  #GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/${{ secrets.GCP_SVC_ACCOUNT }}.json
 
 
 
@@ -44,6 +44,7 @@ jobs:
         run: |
           echo "${{ secrets.GCP_SVC_ACCOUNT_CREDS }}" | base64 --decode > $GOOGLE_APPLICATION_CREDENTIALS
           echo "Checking the credentials:"
+          ls
           cat $GOOGLE_APPLICATION_CREDENTIALS
           gcloud auth activate-service-account $SVC_ACCOUNT_EMAIL --key-file=$GOOGLE_APPLICATION_CREDENTIALS
 
