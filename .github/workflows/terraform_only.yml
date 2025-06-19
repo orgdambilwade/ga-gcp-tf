@@ -80,5 +80,5 @@ jobs:
         run: |
           terraform output > abc.txt
           TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-          gsutil cp abc.txt gs://staging_bucket_ai ga_tf_op/abc_${TIMESTAMP}.txt
+          gsutil cp abc.txt gs://staging_bucket_ai/ga_tf_op/abc_${TIMESTAMP}.txt
           
