@@ -36,7 +36,7 @@ jobs:
         with:
           
           #workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}' # It's proabably da-idp
-          workload_identity_provider: 'da-idp' # It's proabably da-idp
+          workload_identity_provider: 'projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp' # It's proabably da-idp
           service_account: '${{ secrets.SERVICE_ACCOUNT }}'
           project_id: '${{ secrets.PROJECT_ID }}'
           #id_token_audience: 'https://iam.googleapis.com/projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp'
