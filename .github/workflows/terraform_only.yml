@@ -14,7 +14,14 @@ on:
       
 permissions:
   contents: write
-  
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SVC_ACCOUNT: ${{ secrets.GCP_SVC_ACCOUNT }}
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/${{ secrets.GCP_SVC_ACCOUNT }}.json
+
+
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -23,19 +30,28 @@ jobs:
       id-token: 'write'
       
     steps:
-      #- name: Clone the gcloud auth libraries
-      #  uses: 'actions/checkout@v4'
-      - id: 'auth'
+      - uses: actions/checkout@v4
+      - name: Check ENV vars
+        run: |
+          echo "Environment variables configured:"
+          echo PROJECT_ID="$PROJECT_ID"
+          echo REGION="$REGION"
+          echo SVC_ACCOUNT="$SVC_ACCOUNT"
+          echo SVC_ACCOUNT_EMAIL="$SVC_ACCOUNT_EMAIL"
+          echo GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
 
-      #- name: Auth config and execution
-        uses: 'google-github-actions/auth@v2'
-        
-        with:
-          #project_id: 'eternal-argon-461501-a8'
-          #workload_identity_provider: 'projects/351592443/locations/global/workloadIdentityPools/providers/github-actions-provider'
-          #service_account: 'service-account-1@eternal-argon-461501-a8.iam.gserviceaccount.com'
-          #audience: 'projects/351592443/locations/global/workloadIdentityPools/wl-identitiy-pool-da/providers/github-actions-provider'
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}' 
+      - name: Create credentials file
+        run: |
+          echo "${{ secrets.GCP_SVC_ACCOUNT_CREDS }}" | base64 --decode > $GOOGLE_APPLICATION_CREDENTIALS
+          echo "Checking the credentials:"
+          head -n 3 $GOOGLE_APPLICATION_CREDENTIALS
+          gcloud auth activate-service-account $SVC_ACCOUNT_EMAIL --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+        shell: bash
+
+
+
+
+
 
       - name: 'Set up Google Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
