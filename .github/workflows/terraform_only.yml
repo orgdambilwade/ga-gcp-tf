@@ -55,7 +55,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: README.md
-          destination: '${{ vars.GCP_BUCKET }}'
+          destination: '${{ secrets.GCP_BUCKET }}'
           process_gcloudignore: false
 
 
