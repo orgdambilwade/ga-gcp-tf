@@ -18,10 +18,11 @@ permissions:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
     steps:
-
-
       - name: Clone the gcloud auth libraries
         uses: 'actions/checkout@v4'
 
@@ -147,6 +148,5 @@ jobs:
           cat agt_outputs/${{ github.event.inputs.agent_identifier_name }}.json
           echo "------ END OUTPUTS ------"
 
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
           
