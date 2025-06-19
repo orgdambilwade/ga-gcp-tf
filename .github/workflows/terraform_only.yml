@@ -32,11 +32,13 @@ jobs:
       - id: auth  
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
+        
         with:
           create_credentials_file: true
           workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.SERVICE_ACCOUNT }}'
-
+          audience: '//iam.googleapis.com/projects/351592443/locations/global/workloadIdentityPools/identity-pool-2/providers/da-idp'
+        
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
