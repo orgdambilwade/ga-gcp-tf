@@ -44,3 +44,55 @@ spec:
             - yes
             - no
           default: no        
+
+  steps:
+    - id: create-pr
+      if: ${{ parameters.source_code_needed == "yes" and parameters.agent_action == "create" }}
+      name: Create PR for Create Flow
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=ptr_backstage_template_agents&owner=Capgemini-Innersource
+        branchName: gcp_bk_template-${{ parameters.agent_identifier_name }}
+        title: "Provision Infra (Create) for ${{ parameters.agent_identifier_name }} on Google Cloud Platform"
+        description: "Triggered from Backstage to create Financial Advisor agent ${{ parameters.agent_identifier_name }}"
+        commitMessage: "Provision Infra (Create) for ${{ parameters.agent_identifier_name }}"
+        targetPath: .
+
+    - id: create-destroy-pr
+      if: ${{ parameters.agent_action == "destroy" }}
+      name: Create PR for Destroy Flow
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=ptr_backstage_template_agents&owner=Capgemini-Innersource
+        branchName: gcp_bk_template-${{ parameters.agent_identifier_name }}
+        title: "Provision Infra (Destroy) for ${{ parameters.agent_identifier_name }}"
+        description: "Triggered from Backstage to destroy FNOL infra for agent ${{ parameters.agent_identifier_name }}"
+        commitMessage: "Provision Infra (Destroy) for ${{ parameters.agent_identifier_name }}"
+        targetPath: .
+
+    - id: dispatch
+      name: Trigger Infra Directly via Workflow Dispatch
+      if: ${{ parameters.source_code_needed == 'no' and parameters.agent_action == 'create' }}
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?repo=ptr_backstage_template_agents&owner=Capgemini-Innersource
+        workflowId: "160824273"
+        branchOrTagName: main
+        workflowInputs:
+          agent_action: ${{ parameters.agent_action }}
+          agent_identifier_name: ${{ parameters.agent_identifier_name }}
+
+    - id: display-public-url
+      name: Display Service URL
+      action: fetch:plain
+      input:
+        url: ./public-url.json
+
+  output:
+    links:
+      - title: View Infra Repo
+        url: https://github.com/Capgemini-Innersource/ptr_ag_ins_claims_fnol/actions
+      - title: View Create PR (if created)
+        url: https://github.com/Capgemini-Innersource/ptr_ag_ins_claims_fnol/pulls?q=is%3Apr+play-create-fnol-agent-${{ parameters.agent_identifier_name }}
+      - title: View Destroy PR (if created)
+        url: https://github.com/Capgemini-Innersource/ptr_ag_ins_claims_fnol/pulls?q=is%3Apr+play-destroy-fnol-agent-${{ parameters.agent_identifier_name }}
