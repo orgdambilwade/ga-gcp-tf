@@ -1,0 +1,46 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: fa-gcp-agent-infra
+  title: Financial Advisor Agentic AI on GCP
+  description: Provision Financial Advisor Agent Team on Google Cloud Platform
+  tags:
+    - gcp
+    - terraform
+spec:
+  owner: development
+  type: service 
+
+  parameters:
+    - title: Financial Advisor Agent Infrastructure Inputs
+      required:
+        - agent_action
+        - agent_identifier_name
+        - k8s_node_instance_type
+        - source_code_needed
+      properties:
+        agent_action:
+          type: string
+          title: Agent Action
+          enum:
+            - create
+            - destroy
+          default: create
+        agent_identifier_name:
+          type: string
+          title: Agent Identifier Name (lowercase, 0-12 characters)
+        k8s_node_instance_type:
+          type: string
+          title: Kubernetes Node Instance Type
+          enum:
+            - standard
+            - enterprise
+            - autopilot
+          default: standard
+        source_code_needed:
+          type: string
+          title: Does agent need source code
+          enum:
+            - yes
+            - no
+          default: no        
